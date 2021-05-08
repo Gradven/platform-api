@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopGoodsDao">
+
+	<sql id="shopGoodsColumns">
+		a.id AS "id",
+		a.shop_id AS "shopId",
+		a.goods_id AS "goodsId",
+		a.status AS "status",
+		a.recommend AS "recommend",
+		b.category_id AS "goodsCategoryId",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="shopGoodsFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="goodsId != null and goodsId != ''">
+				AND a.goods_id = #{goodsId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		   <if test="goodsCategoryId != null and goodsCategoryId != ''">
+			   AND b.category_id = #{goodsCategoryId}
+		   </if>
+		</where>
+	</sql>
+
+	<sql id="shopGoodsJoins">
+       LEFT JOIN goods_info AS b ON b.id = a.goods_id
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopGoods">
+		SELECT
+			<include refid="shopGoodsColumns"/>
+		FROM shop_goods a
+		<include refid="shopGoodsJoins"/>
+		<include refid="shopGoodsFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopGoods">
+		SELECT
+			<include refid="shopGoodsColumns"/>
+		FROM shop_goods a
+		<include refid="shopGoodsJoins"/>
+		<include refid="shopGoodsFindWhere"/>
+		<choose>
+			<when test="goodsOrderType eq 1">
+				ORDER BY  a.update_time DESC
+			</when>
+			<when test="goodsOrderType eq 2 and ascDesc eq 1">
+				ORDER BY b.retail_price ASC
+			</when>
+			<when test="goodsOrderType eq 2 and ascDesc eq 2">
+				ORDER BY b.retail_price DESC
+			</when>
+			<when test="goodsOrderType eq 3">
+				ORDER BY b.category_id ASC
+			</when>
+			<otherwise>
+				ORDER BY  a.update_time DESC
+			</otherwise>
+		</choose>
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_goods a
+		<include refid="shopGoodsJoins"/>
+		<include refid="shopGoodsFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopGoods">
+		INSERT INTO shop_goods(
+			id,
+			shop_id,
+			goods_id,
+			status,
+			recommend,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{shopId},
+			#{goodsId},
+			#{status},
+			#{recommend},
+			NOW(),
+			NOW()
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE shop_goods
+		   <set>
+		   <if test="status != null">
+		       status = #{status},
+	       </if>
+		   <if test="recommend != null">
+			   recommend = #{recommend},
+		   </if>
+		       update_time = NOW(),
+
+           </set>
+		<where>
+		<if test="id != null and id != ''">
+			AND id = #{id}
+		</if>
+		<if test="shopId != null and shopId != ''">
+			AND shop_id = #{shopId}
+		</if>
+		<if test="goodsId != null and goodsId != ''">
+			AND goods_id = #{goodsId}
+		</if>
+		</where>
+	</update>
+
+
+</mapper>

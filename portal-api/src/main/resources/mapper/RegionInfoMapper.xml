@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.RegionInfoDao">
+
+	<sql id="regionInfoColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.parent_code AS "parentCode",
+		a.code_path AS "codePath",
+		a.grade AS "grade",
+		a.name AS "name",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="regionInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="code != null">
+				AND a.code = #{code}
+			</if>
+			<if test="parentCode != null ">
+				AND a.parent_code = #{parentCode}
+			</if>
+			<if test="codePath != null and codePath != ''">
+				AND a.code_path = #{codePath}
+			</if>
+			<if test="grade != null">
+				AND a.grade = #{grade}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="regionInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.RegionInfo">
+		SELECT
+			<include refid="regionInfoColumns"/>
+		FROM region_info a
+		<include refid="regionInfoJoins"/>
+		<include refid="regionInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.RegionInfo">
+		SELECT
+			<include refid="regionInfoColumns"/>
+		FROM region_info a
+		<include refid="regionInfoJoins"/>
+		<include refid="regionInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM region_info a
+		<include refid="regionInfoJoins"/>
+		<include refid="regionInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.RegionInfo">
+		INSERT INTO region_info(
+			id,
+			code,
+			parent_code,
+			code_path,
+			grade,
+			name,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{code},
+			#{parentCode},
+			#{codePath},
+			#{grade},
+			#{name},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE region_info
+		   <set>
+		   <if test="code != null">
+		       code = #{code},
+	       </if>
+		   <if test="parentCode != null">
+		       parent_code = #{parentCode},
+	       </if>
+		   <if test="codePath != null">
+		       code_path = #{codePath},
+	       </if>
+		   <if test="grade != null">
+		       grade = #{grade},
+	       </if>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM region_info
+		WHERE id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopGoodsCategoryDao">
+
+	<sql id="shopGoodsCategoryColumns">
+		a.id AS "id",
+		a.shop_id AS "shopId",
+		a.category_id AS "categoryId",
+		a.create_time AS "createTime"
+	</sql>
+
+	<sql id="shopGoodsCategoryFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+		   <if test="categoryId != null and categoryId != ''">
+			   AND a.category_id = #{categoryId}
+		   </if>
+		</where>
+	</sql>
+
+	<sql id="shopGoodsCategoryJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopGoodsCategory">
+		SELECT
+			<include refid="shopGoodsCategoryColumns"/>
+		FROM shop_goods_category a
+		<include refid="shopGoodsCategoryJoins"/>
+		<include refid="shopGoodsCategoryFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopGoodsCategory">
+		SELECT
+			<include refid="shopGoodsCategoryColumns"/>
+		FROM shop_goods_category a
+		<include refid="shopGoodsCategoryJoins"/>
+		<include refid="shopGoodsCategoryFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_goods_category a
+		<include refid="shopGoodsCategoryJoins"/>
+		<include refid="shopGoodsCategoryFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopGoodsCategory">
+		INSERT INTO shop_goods_category(
+			id,
+			shop_id,
+			category_id,
+			create_time
+		) VALUES (
+			#{id},
+			#{shopId},
+			#{categoryId},
+			NOW()
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE shop_goods_category
+		   <set>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="categoryId != null">
+		       category_id = #{categoryId},
+	       </if>
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM shop_goods_category
+		WHERE shop_id = #{shopId} AND category_id = #{categoryId}
+	</update>
+
+</mapper>

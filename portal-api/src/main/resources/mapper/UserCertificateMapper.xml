@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.UserCertificateDao">
+
+	<sql id="userCertificateColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.real_name AS "realName",
+		a.id_card AS "idCard",
+		a.card_front AS "cardFront",
+		a.card_back AS "cardBack",
+		a.approve_status AS "approveStatus",
+		a.address AS "address",
+		a.sex AS "sex",
+		a.birth AS "birth",
+		a.nationality AS "nationality",
+		a.start_date AS "startDate",
+		a.end_date AS "endDate",
+		a.issue AS "issue",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="userCertificateFindWhere">
+	   <where>
+			<if test="id != null">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="userCertificateJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.UserCertificate">
+		SELECT
+			<include refid="userCertificateColumns"/>
+		FROM user_certificate a
+		<include refid="userCertificateJoins"/>
+		<include refid="userCertificateFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.UserCertificate">
+		SELECT
+			<include refid="userCertificateColumns"/>
+		FROM user_certificate a
+		<include refid="userCertificateJoins"/>
+		<include refid="userCertificateFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM user_certificate a
+		<include refid="userCertificateJoins"/>
+		<include refid="userCertificateFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.UserCertificate">
+		INSERT INTO user_certificate(
+			id,
+			user_id,
+			real_name,
+			id_card,
+			card_front,
+			card_back,
+			approve_status,
+			address,
+			sex,
+			birth,
+			nationality,
+			start_date,
+			end_date,
+			issue,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{userId},
+			#{realName},
+			#{idCard},
+			#{cardFront},
+			#{cardBack},
+			#{approveStatus},
+			#{address},
+			#{sex},
+			#{birth},
+			#{nationality},
+			#{startDate},
+			#{endDate},
+			#{issue},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE user_certificate
+		   <set>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="realName != null">
+		       real_name = #{realName},
+	       </if>
+		   <if test="idCard != null">
+		       id_card = #{idCard},
+	       </if>
+		   <if test="cardFront != null">
+		       card_front = #{cardFront},
+	       </if>
+		   <if test="cardBack != null">
+		       card_back = #{cardBack},
+	       </if>
+		   <if test="approveStatus != null">
+		       approve_status = #{approveStatus},
+	       </if>
+		   <if test="address != null">
+		       address = #{address},
+	       </if>
+		   <if test="sex != null">
+		       sex = #{sex},
+	       </if>
+		   <if test="birth != null">
+		       birth = #{birth},
+	       </if>
+		   <if test="nationality != null">
+		       nationality = #{nationality},
+	       </if>
+		   <if test="startDate != null">
+		       start_date = #{startDate},
+	       </if>
+		   <if test="endDate != null">
+		       end_date = #{endDate},
+	       </if>
+		   <if test="issue != null">
+		       issue = #{issue},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM user_certificate
+		WHERE id = #{id}
+	</update>
+
+</mapper>

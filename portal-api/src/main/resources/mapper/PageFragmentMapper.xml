@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.PageFragmentDao">
+
+	<sql id="pageFragmentColumns">
+		a.id AS "id",
+		a.keyword AS "keyword",
+		a.type AS "type",
+		a.name AS "name",
+		a.value AS "value"
+	</sql>
+
+	<sql id="pageFragmentFindWhere">
+	   <where>
+			
+			<if test="keyword != null and keyword != ''">
+				AND a.keyword = #{keyword}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="pageFragmentJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.PageFragment">
+		SELECT
+			<include refid="pageFragmentColumns"/>
+		FROM page_fragment a
+		<include refid="pageFragmentJoins"/>
+		<include refid="pageFragmentFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.PageFragment">
+		SELECT
+			<include refid="pageFragmentColumns"/>
+		FROM page_fragment a
+		<include refid="pageFragmentJoins"/>
+		<include refid="pageFragmentFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM page_fragment a
+		<include refid="pageFragmentJoins"/>
+		<include refid="pageFragmentFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.PageFragment">
+		INSERT INTO page_fragment(
+			id,
+			page_id,
+			keyword,
+			type,
+			name,
+			value,
+			remark,
+			create_by,
+			update_by,
+			create_time,
+			update_time 
+		) VALUES (
+			#{id},
+			#{pageId},
+			#{keyword},
+			#{type},
+			#{name},
+			#{value},
+			#{remark},
+			#{createBy.id},
+			#{updateBy.id},
+			NOW(),
+			#{updateTime }
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE page_fragment
+		   <set>
+		   <if test="pageId != null">
+		       page_id = #{pageId},
+	       </if>
+		   <if test="keyword != null">
+		       keyword = #{keyword},
+	       </if>
+		   <if test="type != null">
+		       type = #{type},
+	       </if>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		   <if test="value != null">
+		       value = #{value},
+	       </if>
+		   <if test="remark != null">
+		       remark = #{remark},
+	       </if>
+		   <if test="updateBy.id != null">
+		       update_by = #{updateBy.id},
+	       </if>
+		   <if test="updateTime  != null">
+		       update_time  = #{updateTime },
+	       </if>
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM page_fragment
+		WHERE id = #{id}
+	</update>
+
+</mapper>

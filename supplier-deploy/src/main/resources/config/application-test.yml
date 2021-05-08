@@ -1,0 +1,91 @@
+server:
+  port: 2223
+  session:
+    timeout: 3600  # session最大超时时间(分钟)，默认为30，这里设置为6小时
+    cookie:
+      max-age: 216000    # 单位为秒，设置为6小时
+  tomcat:
+    max-threads: 512
+    uri-encoding: utf-8
+spring:
+  application:
+    name: hongqu-supplier-api-test
+  datasource:
+    url: jdbc:mysql://xxxxx:2240/hongqu_test?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: xxxx
+    driver-class-name: com.mysql.jdbc.Driver
+    initial-size: 1
+    min-idle: 3
+    max-idle: 10
+    max-active: 10
+    max-wait: 60000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+
+  mail:
+    host: smtp.mxhichina.com
+    port: 25
+    username: xxx@xxx.com
+    password: xxx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 25000
+          starttls:
+            enable: false
+            required: false
+  session:
+    store-type: redis
+    redis:
+      namespace: supplier
+  jackson:
+    serialization:
+      indent-output: true
+  redis:
+    host: 192.168.203.224
+    database: 1
+    port: 2241
+    password:
+    pool:
+      max-active: 100
+      max-wait: 3000
+      max-idle: 20
+      min-idle: 10
+    timeout: 5000
+
+logging:
+  file: ./logs/${spring.application.name}.log
+
+security:
+  basic:
+    path: /swagger-ui.html
+    enabled: true
+  user:
+    name: admin
+    password: xxxx
+
+management:
+  port: 2223
+  address: 127.0.0.1
+  context-path: /admin
+  security:
+    role: SUPERUSER
+
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+    path: /shutdown
+
+aliyun:
+  accessKeyId: xxxxx
+  accessKeySecret: xxxx
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    bucket: hq-test
+    host: https://hq-test.oss-cn-hangzhou.aliyuncs.com

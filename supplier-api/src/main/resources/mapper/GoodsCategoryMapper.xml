@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.GoodsCategoryDao">
+
+	<sql id="goodsCategoryColumns">
+		a.id AS "id",
+		a.parent_id AS "parentId",
+		a.parent_ids AS "parentIds",
+		a.name AS "name",
+		a.code AS "code"
+	</sql>
+
+	<sql id="goodsCategoryFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="parentId != null">
+				AND a.parent_id = #{parentId}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					CONCAT('%',#{name},'%')
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="goodsCategoryJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.GoodsCategory">
+		SELECT
+			<include refid="goodsCategoryColumns"/>
+		FROM goods_category a
+		<include refid="goodsCategoryJoins"/>
+		<include refid="goodsCategoryFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.GoodsCategory">
+		SELECT
+			<include refid="goodsCategoryColumns"/>
+		FROM goods_category a
+		<include refid="goodsCategoryJoins"/>
+		<include refid="goodsCategoryFindWhere"/>
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM goods_category a
+		<include refid="goodsCategoryJoins"/>
+		<include refid="goodsCategoryFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.GoodsCategory">
+		INSERT INTO goods_category(
+			id,
+			parent_id,
+			parent_ids,
+			name,
+			code,
+			remark,
+			create_by,
+			update_by,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{parentId},
+			#{parentIds},
+			#{name},
+			#{code},
+			#{remark},
+			#{createBy.id},
+			#{updateBy.id},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE goods_category
+		   <set>
+		   <if test="parentId != null">
+		       parent_id = #{parentId},
+	       </if>
+		   <if test="parentIds != null">
+		       parent_ids = #{parentIds},
+	       </if>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		   <if test="code != null">
+		       code = #{code},
+	       </if>
+		   <if test="remark != null">
+		       remark = #{remark},
+	       </if>
+		   <if test="updateBy.id != null">
+		       update_by = #{updateBy.id},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM goods_category
+		WHERE id = #{id}
+	</update>
+
+</mapper>

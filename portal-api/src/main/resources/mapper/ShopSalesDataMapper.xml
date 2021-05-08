@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopSalesDataMapper">
+	<sql id="shopSalesDataColumns">
+		a.id AS "id",
+		a.shop_id AS "shopId",
+		a.order_count AS "orderCount",
+		a.sales_amount AS "salesAmount"
+	</sql>
+
+	<sql id="shopSalesDataFindWhere">
+	   <where>
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="shopSalesDataJoins">
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopSalesData">
+		SELECT
+			<include refid="shopSalesDataColumns"/>
+		FROM shop_sales_data a
+		<include refid="shopSalesDataJoins"/>
+		<include refid="shopSalesDataFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopSalesData">
+		SELECT
+			<include refid="shopSalesDataColumns"/>
+		FROM shop_sales_data a
+		<include refid="shopSalesDataJoins"/>
+		<include refid="shopSalesDataFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_sales_data a
+		<include refid="shopSalesDataJoins"/>
+		<include refid="shopSalesDataFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopSalesData">
+		INSERT INTO shop_sales_data(
+			shop_id,
+			order_count,
+			sales_amount,
+			create_time
+		) VALUES (
+			#{shopId},
+			#{orderCount},
+			#{salesAmount},
+			NOW()
+		)
+		on duplicate key update
+			order_count = order_count + 1,
+			sales_amount = sales_amount + #{salesAmount},
+			update_time = now();
+	</insert>
+
+	<update id="update">
+		UPDATE
+			shop_sales_data
+		set
+			update_time = NOW()
+		WHERE
+			id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM shop_sales_data
+		WHERE id = #{id}
+	</update>
+</mapper>

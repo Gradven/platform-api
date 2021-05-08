@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.InvitationCodeOperDao">
+
+	<sql id="invitationCodeOperColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.code AS "code"
+	</sql>
+
+	<sql id="invitationCodeOperFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="invitationCodeOperJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.InvitationCodeOper">
+		SELECT
+			<include refid="invitationCodeOperColumns"/>
+		FROM invitation_code_oper a
+		<include refid="invitationCodeOperJoins"/>
+		<include refid="invitationCodeOperFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.InvitationCodeOper">
+		SELECT
+			<include refid="invitationCodeOperColumns"/>
+		FROM invitation_code_oper a
+		<include refid="invitationCodeOperJoins"/>
+		<include refid="invitationCodeOperFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM invitation_code_oper a
+		<include refid="invitationCodeOperJoins"/>
+		<include refid="invitationCodeOperFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.InvitationCodeOper">
+		INSERT INTO invitation_code_oper(
+			id,
+			user_id,
+			code,
+			create_time
+		) VALUES (
+			#{id},
+			#{userId},
+			#{code},
+			NOW()
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE invitation_code_oper
+		   <set>
+		   <if test="userId != null">
+			   user_id = #{userId},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE code = #{code}
+	</update>
+
+	<update id="delete">
+		DELETE FROM invitation_code_oper
+		WHERE id = #{id}
+	</update>
+
+</mapper>

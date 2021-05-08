@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.WithdrawInfoDao">
+
+	<sql id="withdrawInfoColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.shop_id AS "shopId",
+		a.amount AS "amount",
+		a.status AS "status",
+		a.type AS "type",
+		a.remark AS "remark",
+		a.trade_no AS "tradeNo",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="withdrawInfoFindWhere">
+	   <where>
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="tradeNo != null and tradeNo != ''">
+				AND a.trade_no = #{tradeNo}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="withdrawInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.WithdrawInfo">
+		SELECT
+			<include refid="withdrawInfoColumns"/>
+		FROM withdraw_info a
+		<include refid="withdrawInfoJoins"/>
+		<include refid="withdrawInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.WithdrawInfo">
+		SELECT
+			<include refid="withdrawInfoColumns"/>
+		FROM withdraw_info a
+		<include refid="withdrawInfoJoins"/>
+		<include refid="withdrawInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM withdraw_info a
+		<include refid="withdrawInfoJoins"/>
+		<include refid="withdrawInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.WithdrawInfo">
+		INSERT INTO withdraw_info(
+			id,
+			user_id,
+			shop_id,
+			amount,
+			status,
+			type,
+			remark,
+			trade_no,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{userId},
+			#{shopId},
+			#{amount},
+			#{status},
+			#{type},
+			#{remark},
+			#{tradeNo},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE withdraw_info
+		   <set>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="amount != null">
+		       amount = #{amount},
+	       </if>
+		   <if test="status != null">
+		       status = #{status},
+	       </if>
+		   <if test="type != null">
+		       type = #{type},
+	       </if>
+		   <if test="remark != null">
+		       remark = #{remark},
+	       </if>
+		   <if test="paymentNo != null">
+		       payment_no = #{paymentNo},
+	       </if>
+		   <if test="paymentTime != null">
+		       payment_time = #{paymentTime},
+	       </if>
+		       update_time = NOW()
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM withdraw_info
+		WHERE id = #{id}
+	</update>
+</mapper>

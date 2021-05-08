@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.SupplierInfoDao">
+
+	<sql id="supplierInfoColumns">
+		a.service_tel AS "serviceTel",
+		a.service_weixin AS "serviceWeixin",
+		a.service_qq AS "serviceQq",
+		a.service_address AS "serviceAddress",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="supplierInfoFindWhere">
+	   <where>
+			
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					CONCAT('%',#{name},'%')
+			</if>
+		</where>
+	</sql>
+
+	<sql id="supplierInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.SupplierInfo">
+		SELECT
+			<include refid="supplierInfoColumns"/>
+		FROM supplier_info a
+		<include refid="supplierInfoJoins"/>
+		<include refid="supplierInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.SupplierInfo">
+		SELECT
+			<include refid="supplierInfoColumns"/>
+		FROM supplier_info a
+		<include refid="supplierInfoJoins"/>
+		<include refid="supplierInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM supplier_info a
+		<include refid="supplierInfoJoins"/>
+		<include refid="supplierInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.SupplierInfo">
+		INSERT INTO supplier_info(
+			id,
+			name,
+			credit_code,
+			license_img,
+			legal_representative,
+			reg_province,
+			address,
+			contact,
+			mobile,
+			phone,
+			email,
+			status,
+			service_tel,
+			service_weixin,
+			service_qq,
+			service_address,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{name},
+			#{creditCode},
+			#{licenseImg},
+			#{legalRepresentative},
+			#{regProvince},
+			#{address},
+			#{contact},
+			#{mobile},
+			#{phone},
+			#{email},
+			#{status},
+			#{serviceTel},
+			#{serviceWeixin},
+			#{serviceQq},
+			#{serviceAddress},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE supplier_info
+		   <set>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		   <if test="creditCode != null">
+		       credit_code = #{creditCode},
+	       </if>
+		   <if test="licenseImg != null">
+		       license_img = #{licenseImg},
+	       </if>
+		   <if test="legalRepresentative != null">
+		       legal_representative = #{legalRepresentative},
+	       </if>
+		   <if test="regProvince != null">
+		       reg_province = #{regProvince},
+	       </if>
+		   <if test="address != null">
+		       address = #{address},
+	       </if>
+		   <if test="contact != null">
+		       contact = #{contact},
+	       </if>
+		   <if test="mobile != null">
+		       mobile = #{mobile},
+	       </if>
+		   <if test="phone != null">
+		       phone = #{phone},
+	       </if>
+		   <if test="email != null">
+		       email = #{email},
+	       </if>
+		   <if test="status != null">
+		       status = #{status},
+	       </if>
+		   <if test="serviceTel != null">
+		       service_tel = #{serviceTel},
+	       </if>
+		   <if test="serviceWeixin != null">
+		       service_weixin = #{serviceWeixin},
+	       </if>
+		   <if test="serviceQq != null">
+		       service_qq = #{serviceQq},
+	       </if>
+		   <if test="serviceAddress != null">
+		       service_address = #{serviceAddress},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM supplier_info
+		WHERE id = #{id}
+	</update>
+
+</mapper>

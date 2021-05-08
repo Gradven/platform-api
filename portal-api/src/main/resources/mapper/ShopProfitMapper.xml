@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopProfitDao">
+
+	<sql id="shopProfitColumns">
+		a.id AS "id",
+		a.type AS "type",
+		a.profit AS "profit",
+		a.shop_id AS "shopId",
+		a.sn AS "sn",
+        a.order_goods_id AS "orderGoodsId",
+        a.confirm_flag AS "confirmFlag",
+        a.confirm_time AS "confirmTime",
+        a.available_flag AS "availableFlag",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.remark AS "remark"
+	</sql>
+
+	<sql id="shopProfitFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="type != null">
+				AND a.type = #{type}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+		    <if test="orderGoodsId != null and orderGoodsId != ''">
+			   AND a.order_goods_id = #{orderGoodsId}
+		    </if>
+		   <if test="confirmFlag != null">
+			   AND a.confirm_flag = #{confirmFlag}
+		   </if>
+		   <if test="availableFlag != null">
+			   AND a.available_flag = #{availableFlag}
+		   </if>
+		   <if test="beginConfirmTime != null and endConfirmTime != null ">
+			   AND a.confirm_time BETWEEN #{beginConfirmTime} AND #{endConfirmTime}
+		   </if>
+		</where>
+	</sql>
+
+	<sql id="shopProfitJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopProfit">
+		SELECT
+			<include refid="shopProfitColumns"/>
+		FROM shop_profit a
+		<include refid="shopProfitJoins"/>
+		<include refid="shopProfitFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopProfit">
+		SELECT
+			<include refid="shopProfitColumns"/>
+		FROM shop_profit a
+		<include refid="shopProfitJoins"/>
+		<include refid="shopProfitFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_profit a
+		<include refid="shopProfitJoins"/>
+		<include refid="shopProfitFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopProfit">
+		INSERT INTO shop_profit(
+			id,
+			type,
+			profit,
+			shop_id,
+			sn,
+			order_goods_id,
+            confirm_flag,
+            confirm_time,
+            available_flag,
+			create_time,
+			remark
+		) VALUES (
+			#{id},
+			#{type},
+			#{profit},
+			#{shopId},
+			#{sn},
+			#{orderGoodsId},
+			#{confirmFlag},
+			#{confirmTime},
+			#{availableFlag},
+			NOW(),
+			#{remark}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE shop_profit
+		   <set>
+		   <if test="type != null">
+		       type = #{type},
+	       </if>
+		   <if test="profit != null">
+		       profit = #{profit},
+	       </if>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="sn != null">
+		       sn = #{sn},
+	       </if>
+		   <if test="confirmFlag != null">
+			   confirm_flag = #{confirmFlag},
+		   </if>
+		   <if test="confirmTime != null">
+			   confirm_time = #{confirmTime},
+		   </if>
+		   <if test="availableFlag != null">
+			   available_flag = #{availableFlag},
+		   </if>
+		   <if test="remark != null">
+		       remark = #{remark},
+	       </if>
+			   update_time = NOW()
+
+           </set>
+		<where>
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="orderGoodsId != null and orderGoodsId != ''">
+				AND order_goods_id = #{orderGoodsId}
+			</if>
+		</where>
+	</update>
+
+	<update id="delete">
+		DELETE FROM shop_profit
+		WHERE id = #{id}
+	</update>
+
+
+	<select id="unAvailableProfit" resultType="BigDecimal">
+		SELECT
+		sum(a.profit)
+		FROM shop_profit a
+		WHERE a.shop_id = #{shop_id} AND available_flag = 0
+	</select>
+
+	<select id="allProfit" resultType="BigDecimal">
+		SELECT
+		sum(a.profit)
+		FROM shop_profit a
+		WHERE a.shop_id = #{shop_id}
+	</select>
+
+</mapper>

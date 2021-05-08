@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopInfoDao">
+
+	<sql id="shopInfoColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.logo AS "logo",
+		a.user_id AS "userId",
+		a.certificate_flag AS "certificateFlag",
+		a.pay_fee_flag AS "payFeeFlag",
+		a.description AS "description",
+		a.background_url AS "backgroundUrl",
+		a.expire_time AS "expireTime",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="shopInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					CONCAT('%',#{name},'%')
+			</if>
+		   <if test="exactMatchName != null and exactMatchName != ''">
+			   AND a.name = #{exactMatchName}
+		   </if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+		   <if test="certificateFlag != null">
+			   AND a.certificate_flag = #{certificateFlag}
+		   </if>
+		</where>
+	</sql>
+
+	<sql id="shopInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopInfo">
+		SELECT
+			<include refid="shopInfoColumns"/>
+		FROM shop_info a
+		<include refid="shopInfoJoins"/>
+		<include refid="shopInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopInfo">
+		SELECT
+			<include refid="shopInfoColumns"/>
+		FROM shop_info a
+		<include refid="shopInfoJoins"/>
+		<include refid="shopInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_info a
+		<include refid="shopInfoJoins"/>
+		<include refid="shopInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopInfo">
+		INSERT INTO shop_info(
+			id,
+			name,
+			logo,
+			user_id,
+			certificate_flag,
+			description,
+			background_url,
+			expire_time,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{name},
+			#{logo},
+			#{userId},
+			#{certificateFlag},
+			#{description},
+			#{backgroundUrl},
+			#{expireTime},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE shop_info
+		   <set>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		   <if test="logo != null">
+		       logo = #{logo},
+	       </if>
+		   <if test="certificateFlag != null">
+		       certificate_flag = #{certificateFlag},
+	       </if>
+		   <if test="payFeeFlag != null">
+			   pay_fee_flag = #{payFeeFlag},
+		   </if>
+		   <if test="description != null">
+				description = #{description},
+		   </if>
+		   <if test="backgroundUrl != null">
+			   background_url = #{backgroundUrl},
+		   </if>
+		   <if test="expireTime != null">
+			   expire_time = #{expireTime},
+		   </if>
+		       update_time = NOW(),
+           </set>
+		WHERE id = #{id} AND user_id = #{userId}
+	</update>
+
+	<update id="delete">
+		DELETE FROM shop_info
+		WHERE id = #{id}
+	</update>
+
+	<select id="findByName" resultType="com.channelsharing.hongqu.portal.api.entity.ShopInfo">
+		SELECT
+		<include refid="shopInfoColumns"/>
+		FROM shop_info a WHERE name = #{name}
+	</select>
+
+</mapper>

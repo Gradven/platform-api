@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.InvoiceInfoDao">
+
+	<sql id="invoiceInfoColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.type AS "type",
+		a.title AS "title",
+		a.title_type AS "titleType",
+		a.tax_no AS "taxNo",
+		a.bank_name AS "bankName",
+		a.bank_no AS "bankNo",
+		a.address AS "address",
+		a.telephone AS "telephone",
+		a.default_flag AS "defaultFlag",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="invoiceInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="type != null">
+				AND a.type = #{type}
+			</if>
+		   <if test="titleType != null">
+			   AND a.title_type = #{titleType}
+		   </if>
+		</where>
+	</sql>
+
+	<sql id="invoiceInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.InvoiceInfo">
+		SELECT
+			<include refid="invoiceInfoColumns"/>
+		FROM invoice_info a
+		<include refid="invoiceInfoJoins"/>
+		<include refid="invoiceInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.InvoiceInfo">
+		SELECT
+			<include refid="invoiceInfoColumns"/>
+		FROM invoice_info a
+		<include refid="invoiceInfoJoins"/>
+		<include refid="invoiceInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM invoice_info a
+		<include refid="invoiceInfoJoins"/>
+		<include refid="invoiceInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.InvoiceInfo">
+		INSERT INTO invoice_info(
+			id,
+			user_id,
+			type,
+			title,
+			title_type,
+			tax_no,
+			bank_name,
+			bank_no,
+			address,
+			telephone,
+			default_flag,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{userId},
+			#{type},
+			#{title},
+			#{titleType},
+			#{taxNo},
+			#{bankName},
+			#{bankNo},
+			#{address},
+			#{telephone},
+			#{defaultFlag},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE invoice_info
+		   <set>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="title != null">
+			   title = #{title},
+		   </if>
+		   <if test="type != null">
+			   type = #{type},
+		   </if>
+		   <if test="titleType != null">
+			   title_type = #{titleType},
+		   </if>
+		   <if test="taxNo != null">
+		       tax_no = #{taxNo},
+	       </if>
+		   <if test="bankName != null">
+		       bank_name = #{bankName},
+	       </if>
+		   <if test="bankNo != null">
+		       bank_no = #{bankNo},
+	       </if>
+		   <if test="address != null">
+		       address = #{address},
+	       </if>
+		   <if test="telephone != null">
+		       telephone = #{telephone},
+	       </if>
+		   <if test="defaultFlag != null">
+		       default_flag = #{defaultFlag},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		<where>
+
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			<if test="type != null">
+				AND type = #{type}
+			</if>
+		</where>
+	</update>
+
+	<update id="delete">
+		DELETE FROM invoice_info
+		WHERE id = #{id}
+	</update>
+
+</mapper>

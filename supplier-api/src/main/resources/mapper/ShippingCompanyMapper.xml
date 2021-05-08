@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.ShippingCompanyDao">
+
+	<sql id="shippingCompanyColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.name AS "name",
+		a.kuaidi100_com AS "kuaidi100Com"
+	</sql>
+
+	<sql id="shippingCompanyFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					CONCAT('%',#{name},'%')
+			</if>
+		</where>
+	</sql>
+
+	<sql id="shippingCompanyJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.ShippingCompany">
+		SELECT
+			<include refid="shippingCompanyColumns"/>
+		FROM shipping_company a
+		<include refid="shippingCompanyJoins"/>
+		<include refid="shippingCompanyFindWhere"/>
+		ORDER BY a.id ASC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.ShippingCompany">
+		SELECT
+			<include refid="shippingCompanyColumns"/>
+		FROM shipping_company a
+		<include refid="shippingCompanyJoins"/>
+		<include refid="shippingCompanyFindWhere"/>
+		ORDER BY a.create_time ASC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shipping_company a
+		<include refid="shippingCompanyJoins"/>
+		<include refid="shippingCompanyFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.ShippingCompany">
+		INSERT INTO shipping_company(
+			id,
+			code,
+			name,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{code},
+			#{name},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE shipping_company
+		   <set>
+		   <if test="code != null">
+		       code = #{code},
+	       </if>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM shipping_company
+		WHERE id = #{id}
+	</update>
+
+</mapper>

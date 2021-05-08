@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.GoodsStatisticDao">
+
+	<sql id="goodsStatisticColumns">
+		a.id AS "id",
+		a.goods_id AS "goodsId",
+		a.like_count AS "likeCount",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="goodsStatisticFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="goodsId != null and goodsId != ''">
+				AND a.goods_id = #{goodsId}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="goodsStatisticJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.GoodsStatistic">
+		SELECT
+			<include refid="goodsStatisticColumns"/>
+		FROM goods_statistic a
+		<include refid="goodsStatisticJoins"/>
+		<include refid="goodsStatisticFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.GoodsStatistic">
+		SELECT
+			<include refid="goodsStatisticColumns"/>
+		FROM goods_statistic a
+		<include refid="goodsStatisticJoins"/>
+		<include refid="goodsStatisticFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM goods_statistic a
+		<include refid="goodsStatisticJoins"/>
+		<include refid="goodsStatisticFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.GoodsStatistic">
+		INSERT INTO goods_statistic(
+			id,
+			goods_id,
+			like_count,
+			create_time
+		) VALUES (
+			#{id},
+			#{goodsId},
+		   <if test="likeCount != null">
+			   #{likeCount},
+		   </if>
+		   <if test="likeCount == null">
+			    0,
+		    </if>
+			NOW()
+		)ON DUPLICATE KEY UPDATE
+		   <if test="likeCount != null">
+			like_count = #{likeCount} + like_count
+		   </if>
+		    , update_time = NOW()
+	</insert>
+
+	<update id="update">
+		UPDATE goods_statistic
+		   <set>
+		   <if test="goodsId != null">
+		       goods_id = #{goodsId},
+	       </if>
+		   <if test="likeCount != null">
+		       like_count = #{likeCount},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM goods_statistic
+		WHERE id = #{id}
+	</update>
+
+</mapper>

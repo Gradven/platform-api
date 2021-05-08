@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.RecommendSentenceDao">
+
+	<sql id="recommendSentenceColumns">
+		a.id AS "id",
+		a.recommend AS "recommend"
+	</sql>
+
+	<sql id="recommendSentenceFindWhere">
+	   <where>
+			
+			<if test="recommend != null and recommend != ''">
+				AND a.recommend LIKE
+					CONCAT('%',#{recommend},'%')
+			</if>
+		</where>
+	</sql>
+
+	<sql id="recommendSentenceJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.RecommendSentence">
+		SELECT
+			<include refid="recommendSentenceColumns"/>
+		FROM recommend_sentence a
+		<include refid="recommendSentenceJoins"/>
+		<include refid="recommendSentenceFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.RecommendSentence">
+		SELECT
+			<include refid="recommendSentenceColumns"/>
+		FROM recommend_sentence a
+		<include refid="recommendSentenceJoins"/>
+		<include refid="recommendSentenceFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM recommend_sentence a
+		<include refid="recommendSentenceJoins"/>
+		<include refid="recommendSentenceFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.RecommendSentence">
+		INSERT INTO recommend_sentence(
+			id,
+			recommend
+		) VALUES (
+			#{id},
+			#{recommend}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE recommend_sentence
+		   <set>
+		   <if test="id != null">
+		       id = #{id},
+	       </if>
+		   <if test="recommend != null">
+		       recommend = #{recommend},
+	       </if>
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM recommend_sentence
+		WHERE id = #{id}
+	</update>
+
+</mapper>

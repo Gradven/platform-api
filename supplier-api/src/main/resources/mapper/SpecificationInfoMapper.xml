@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.SpecificationInfoDao">
+
+	<sql id="specificationInfoColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.sort_order AS "sortOrder",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="specificationInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					CONCAT('%',#{name},'%')
+			</if>
+		</where>
+	</sql>
+
+	<sql id="specificationInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.SpecificationInfo">
+		SELECT
+			<include refid="specificationInfoColumns"/>
+		FROM specification_info a
+		<include refid="specificationInfoJoins"/>
+		<include refid="specificationInfoFindWhere"/>
+		ORDER BY a.sort_order ASC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.SpecificationInfo">
+		SELECT
+			<include refid="specificationInfoColumns"/>
+		FROM specification_info a
+		<include refid="specificationInfoJoins"/>
+		<include refid="specificationInfoFindWhere"/>
+		ORDER BY a.sort_order ASC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM specification_info a
+		<include refid="specificationInfoJoins"/>
+		<include refid="specificationInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.SpecificationInfo">
+		INSERT INTO specification_info(
+			id,
+			name,
+			sort_order,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{name},
+			#{sortOrder},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE specification_info
+		   <set>
+		   <if test="name != null">
+		       name = #{name},
+	       </if>
+		   <if test="sortOrder != null">
+		       sort_order = #{sortOrder},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM specification_info
+		WHERE id = #{id}
+	</update>
+
+</mapper>

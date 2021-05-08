@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopVisitDao">
+
+	<sql id="shopVisitColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.shop_id AS "shopId",
+		a.create_time AS "createTime"
+	</sql>
+
+	<sql id="shopVisitFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="createTime != null and createTime != ''">
+				AND a.create_time = #{createTime}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="shopVisitJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopVisit">
+		SELECT
+			<include refid="shopVisitColumns"/>
+		FROM shop_visit a
+		<include refid="shopVisitJoins"/>
+		<include refid="shopVisitFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopVisit">
+		SELECT
+			<include refid="shopVisitColumns"/>
+		FROM shop_visit a
+		<include refid="shopVisitJoins"/>
+		<include refid="shopVisitFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_visit a
+		<include refid="shopVisitJoins"/>
+		<include refid="shopVisitFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopVisit">
+		INSERT INTO shop_visit(
+			id,
+			user_id,
+			shop_id,
+			create_time
+		) VALUES (
+			#{id},
+			#{userId},
+			#{shopId},
+			NOW()
+		)
+		ON DUPLICATE KEY UPDATE create_time = NOW();
+	</insert>
+
+	<update id="update">
+		UPDATE shop_visit
+		   <set>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM shop_visit
+		WHERE id = #{id}
+	</update>
+
+</mapper>

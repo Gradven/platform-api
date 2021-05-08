@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.UserInfoDao">
+
+	<sql id="userInfoColumns">
+		a.id AS "id",
+		a.nickname AS "nickname",
+		a.password As "password",
+		a.avatar AS "avatar",
+		a.address AS "address",
+		a.company AS "company",
+		a.contact AS "contact",
+		a.status AS "status",
+		a.sex AS "sex",
+		a.third_party_user_id AS "thirdPartyUserId",
+		a.country AS "country",
+		a.province AS "province",
+		a.city AS "city",
+		a.account_type AS "accountType",
+		a.activation_code AS "activationCode",
+		a.login_error_times AS "loginErrorTimes",
+		a.shop_id As "shopId",
+		a.description AS "description",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="userInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="nickname != null and nickname != ''">
+				AND a.nickname like concat('%',#{nickname},'%')
+            </if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+		   <if test="email != null and email != ''">
+			   AND a.email = #{email}
+		   </if>
+			<if test="activationCode != null and activationCode != ''">
+				AND a.activation_code = #{activationCode}
+			</if>
+			<if test="thirdPartyUserId != null and thirdPartyUserId != ''">
+				AND a.third_party_user_id = #{thirdPartyUserId}
+			</if>
+			<if test="accountType != null and accountType != ''">
+				AND a.account_type = #{accountType}
+			</if>
+		   <if test="status != null and status != ''">
+			   AND a.status = #{status}
+		   </if>
+
+		</where>
+	</sql>
+
+	<sql id="userInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.UserInfo">
+		SELECT
+			<include refid="userInfoColumns"/>
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		<include refid="userInfoFindWhere"/>
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.UserInfo">
+		SELECT
+			<include refid="userInfoColumns"/>
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		<include refid="userInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		<include refid="userInfoFindWhere"/>
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.UserInfo">
+		INSERT INTO user_info(
+			id,
+			nickname,
+			mobile,
+			email,
+			password,
+			sex,
+			avatar,
+			address,
+			company,
+			contact,
+			status,
+			activation_code,
+			third_party_user_id,
+			account_type,
+			shop_id,
+			country,
+			province,
+			city,
+			description,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{nickname},
+			#{mobile},
+			#{email},
+			#{password},
+			#{sex},
+			#{avatar},
+			#{address},
+			#{company},
+			#{contact},
+			#{status},
+			#{activationCode},
+			#{thirdPartyUserId},
+			#{accountType},
+			#{shopId},
+			#{country},
+			#{province},
+			#{city},
+			#{description},
+			NOW(),
+			NOW()
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE user_info
+		   <set>
+		   <if test="nickname != null">
+		   nickname = #{nickname},
+	       </if>
+		   <if test="mobile != null">
+		   mobile = #{mobile},
+	       </if>
+		   <if test="email != null">
+		   email = #{email},
+	       </if>
+		   <if test="password != null">
+		   password = #{password},
+	       </if>
+			<if test="sex != null">
+				sex = #{sex},
+			</if>
+			<if test="loginErrorTimes != null">
+				login_error_times = #{loginErrorTimes},
+			</if>
+		   <if test="avatar != null">
+		   avatar = #{avatar},
+	       </if>
+		   <if test="company != null">
+			   company = #{company},
+		   </if>
+		   <if test="address != null">
+			   address = #{address},
+		   </if>
+		   <if test="company != null">
+			   company = #{company},
+		   </if>
+		   <if test="contact != null">
+			   contact = #{contact},
+		   </if>
+		   <if test="status != null">
+		       status = #{status},
+	       </if>
+		   <if test="country != null">
+			   country = #{country},
+		   </if>
+		   <if test="province != null">
+			   province = #{province},
+		   </if>
+		   <if test="city != null">
+			   city = #{city},
+		   </if>
+		   <if test="activationCode != null">
+		       activation_code = #{activationCode},
+	       </if>
+		   <if test="thirdPartyUserId != null">
+		       third_party_user_id = #{thirdPartyUserId},
+	       </if>
+		   <if test="accountType != null">
+		       account_type = #{accountType},
+	       </if>
+		   <if test="shopId != null">
+			   shop_id = #{shopId},
+		   </if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+		   update_time = NOW(),
+
+           </set>
+        <where>
+			<if test="id != null">
+			    AND	id = #{id}
+			</if>
+			<if test="email != null">
+				AND	email = #{email}
+			</if>
+			<if test="mobile != null">
+				AND	mobile = #{mobile}
+			</if>
+        </where>
+	</update>
+
+	<update id="delete">
+		DELETE FROM user_info
+		WHERE id = #{id}
+	</update>
+
+    <select id="isNicknameOccupied" resultType="Boolean">
+        SELECT
+          COUNT(1) > 0
+        FROM
+          user_info
+        WHERE
+          nickname = #{nickname}
+        <if test="userId != null">
+        AND
+          id != #{userId}
+        </if>
+    </select>
+
+    <select id="isEmailOccupied" resultType="Boolean">
+        SELECT
+        COUNT(1) > 0
+        FROM
+        user_info
+        WHERE
+        email = #{email}
+        <if test="userId != null">
+         AND
+            id != #{userId}
+        </if>
+    </select>
+
+    <select id="isMobileOccupied" resultType="Boolean">
+        SELECT
+        COUNT(1) > 0
+        FROM
+        user_info
+        WHERE
+        mobile = #{mobile}
+        <if test="userId != null">
+            AND
+            id != #{userId}
+        </if>
+    </select>
+
+	<select id="findByIds" resultType="com.channelsharing.hongqu.portal.api.entity.UserInfo">
+		SELECT
+		<include refid="userInfoColumns"/>
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		WHERE a.id in
+		<foreach item="item" collection="ids" separator="," open="(" close=")" index="">
+			#{item, jdbcType=NUMERIC}
+		</foreach>
+		AND a.status = 1
+	</select>
+
+	<update id="clearLoginErrorTimes">
+		UPDATE user_info
+		SET login_error_times = 0
+		<where>
+		<if test="email != null and email != ''">
+			AND email = #{email}
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND mobile = #{mobile}
+		</if>
+		</where>
+	</update>
+
+	<update id="bindMobileSendCode">
+		UPDATE user_info
+		<set>
+			<if test="mobile != null">
+				mobile = #{mobile},
+			</if>
+			<if test="loginErrorTimes != null">
+				login_error_times = #{loginErrorTimes},
+			</if>
+			<if test="activationCode != null">
+				activation_code = #{activationCode},
+			</if>
+			update_time = NOW(),
+
+		</set>
+        WHERE id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.AddressInfoDao">
+
+	<sql id="addressInfoColumns">
+		a.id AS "id",
+		a.user_id AS "userId",
+		a.consignee AS "consignee",
+		a.country AS "country",
+		a.province AS "province",
+		a.city AS "city",
+		a.district AS "district",
+		a.address AS "address",
+		a.mobile AS "mobile",
+		a.time_type AS "timeType",
+		a.default_flag AS "defaultFlag",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="addressInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+		    <if test="defaultFlag != null and defaultFlag != ''">
+			   AND a.default_flag = #{defaultFlag}
+		    </if>
+		</where>
+	</sql>
+
+	<sql id="addressInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.AddressInfo">
+		SELECT
+			<include refid="addressInfoColumns"/>
+		FROM address_info a
+		<include refid="addressInfoJoins"/>
+		<include refid="addressInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.AddressInfo">
+		SELECT
+			<include refid="addressInfoColumns"/>
+		FROM address_info a
+		<include refid="addressInfoJoins"/>
+		<include refid="addressInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM address_info a
+		<include refid="addressInfoJoins"/>
+		<include refid="addressInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.AddressInfo">
+		INSERT INTO address_info(
+			id,
+			user_id,
+			consignee,
+			country,
+			province,
+			city,
+			district,
+			address,
+			mobile,
+			time_type,
+			default_flag,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{userId},
+			#{consignee},
+			#{country},
+			#{province},
+			#{city},
+			#{district},
+			#{address},
+			#{mobile},
+			#{timeType},
+			#{defaultFlag},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE address_info
+		   <set>
+		   <if test="country != null">
+		       country = #{country},
+	       </if>
+		   <if test="province != null">
+		       province = #{province},
+	       </if>
+		   <if test="consignee != null">
+			   consignee = #{consignee},
+		   </if>
+		   <if test="city != null">
+		       city = #{city},
+	       </if>
+		   <if test="district != null">
+		       district = #{district},
+	       </if>
+		   <if test="address != null">
+		       address = #{address},
+	       </if>
+		   <if test="mobile != null">
+		       mobile = #{mobile},
+	       </if>
+		   <if test="timeType != null">
+			   time_type = #{timeType},
+		   </if>
+		   <if test="defaultFlag != null">
+		       default_flag = #{defaultFlag},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		<where>
+
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+		</where>
+	</update>
+
+	<update id="delete">
+		DELETE FROM address_info
+		WHERE id = #{id} AND user_id = #{userId}
+	</update>
+
+</mapper>

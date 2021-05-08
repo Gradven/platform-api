@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.OrderInvoiceDao">
+
+	<sql id="orderInvoiceColumns">
+		a.id AS "id",
+		a.order_sn AS "orderSn",
+		a.user_id AS "userId",
+		a.type AS "type",
+		a.title AS "title",
+		a.tax_no AS "taxNo",
+		a.bank_name AS "bankName",
+		a.bank_no AS "bankNo",
+		a.address AS "address",
+		a.telephone AS "telephone",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="orderInvoiceFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="orderSn != null and orderSn != ''">
+				AND a.order_sn = #{orderSn}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="orderInvoiceJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.OrderInvoice">
+		SELECT
+			<include refid="orderInvoiceColumns"/>
+		FROM order_invoice a
+		<include refid="orderInvoiceJoins"/>
+		<include refid="orderInvoiceFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.OrderInvoice">
+		SELECT
+			<include refid="orderInvoiceColumns"/>
+		FROM order_invoice a
+		<include refid="orderInvoiceJoins"/>
+		<include refid="orderInvoiceFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM order_invoice a
+		<include refid="orderInvoiceJoins"/>
+		<include refid="orderInvoiceFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.OrderInvoice">
+		INSERT INTO order_invoice(
+			id,
+			order_sn,
+			user_id,
+			type,
+			title,
+			tax_no,
+			bank_name,
+			bank_no,
+			address,
+			telephone,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{orderSn},
+			#{userId},
+			#{type},
+			#{title},
+			#{taxNo},
+			#{bankName},
+			#{bankNo},
+			#{address},
+			#{telephone},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE order_invoice
+		   <set>
+		   <if test="orderSn != null">
+		       order_sn = #{orderSn},
+	       </if>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="type != null">
+		       type = #{type},
+	       </if>
+		   <if test="title != null">
+		       title = #{title},
+	       </if>
+		   <if test="taxNo != null">
+		       tax_no = #{taxNo},
+	       </if>
+		   <if test="bankName != null">
+		       bank_name = #{bankName},
+	       </if>
+		   <if test="bankNo != null">
+		       bank_no = #{bankNo},
+	       </if>
+		   <if test="address != null">
+		       address = #{address},
+	       </if>
+		   <if test="telephone != null">
+		       telephone = #{telephone},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM order_invoice
+		WHERE id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.ProductInfoDao">
+
+	<sql id="productInfoColumns">
+		a.id AS "id",
+		a.sn AS "sn",
+		a.goods_id AS "goodsId",
+		a.goods_specification_ids AS "goodsSpecificationIds",
+		a.goods_sn AS "goodsSn",
+		a.pic_url AS "picUrl",
+		a.store_number AS "storeNumber",
+		a.sales_volume AS "salesVolume",
+		a.retail_price AS "retailPrice",
+		a.unit_price AS "unitPrice",
+		a.profit AS "profit",
+		a.percent AS "percent",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.del_flag AS "delFlag"
+	</sql>
+
+	<sql id="productInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="sn != null and sn != ''">
+				AND a.sn = #{sn}
+			</if>
+			<if test="goodsId != null and goodsId != ''">
+				AND a.goods_id = #{goodsId}
+			</if>
+			<if test="goodsSn != null and goodsSn != ''">
+				AND a.goods_sn = #{goodsSn}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="productInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.ProductInfo">
+		SELECT
+			<include refid="productInfoColumns"/>
+		FROM product_info a
+		<include refid="productInfoJoins"/>
+		<include refid="productInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.ProductInfo">
+		SELECT
+			<include refid="productInfoColumns"/>
+		FROM product_info a
+		<include refid="productInfoJoins"/>
+		<include refid="productInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM product_info a
+		<include refid="productInfoJoins"/>
+		<include refid="productInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.ProductInfo">
+		INSERT INTO product_info(
+			id,
+			sn,
+			goods_id,
+			goods_specification_ids,
+			goods_sn,
+			pic_url,
+			store_number,
+			sales_volume,
+			retail_price,
+			unit_price,
+			profit,
+			percent,
+			create_time,
+			update_time,
+			del_flag
+		) VALUES (
+			#{id},
+			#{sn},
+			#{goodsId},
+			#{goodsSpecificationIds},
+			#{goodsSn},
+			#{picUrl},
+			#{storeNumber},
+			0,
+			#{retailPrice},
+			#{unitPrice},
+			#{profit},
+			#{percent},
+			NOW(),
+			#{updateTime},
+			#{delFlag}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE product_info
+		   <set>
+		   <if test="sn != null">
+		       sn = #{sn},
+	       </if>
+		   <if test="goodsId != null">
+		       goods_id = #{goodsId},
+	       </if>
+		   <if test="goodsSpecificationIds != null">
+		       goods_specification_ids = #{goodsSpecificationIds},
+	       </if>
+		   <if test="goodsSn != null">
+		       goods_sn = #{goodsSn},
+	       </if>
+		   <if test="picUrl != null">
+			   pic_url = #{picUrl},
+		   </if>
+		   <if test="storeNumber != null">
+		       store_number = #{storeNumber},
+	       </if>
+		   <if test="salesVolume != null">
+			   sales_volume = #{salesVolume},
+		   </if>
+		   <if test="retailPrice != null">
+		       retail_price = #{retailPrice},
+	       </if>
+		   <if test="unitPrice != null">
+		       unit_price = #{unitPrice},
+	       </if>
+		   <if test="profit != null">
+		       profit = #{profit},
+	       </if>
+		   <if test="percent != null">
+			   percent = #{percent},
+		   </if>
+		   <if test="delFlag != null">
+			   del_flag = #{delFlag},
+		   </if>
+		       update_time = NOW(),
+
+           </set>
+		<where>
+
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="sn != null and sn != ''">
+				AND sn = #{sn}
+			</if>
+			<if test="goodsId != null and goodsId != ''">
+				AND goods_id = #{goodsId}
+			</if>
+			<if test="goodsSn != null and goodsSn != ''">
+				AND goods_sn = #{goodsSn}
+			</if>
+		</where>
+	</update>
+
+	<update id="delete">
+		UPDATE product_info SET del_flag = 1
+		WHERE id = #{id}
+	</update>
+
+
+</mapper>

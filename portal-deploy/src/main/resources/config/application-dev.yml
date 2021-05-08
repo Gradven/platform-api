@@ -1,0 +1,122 @@
+server:
+  port: 8881
+  session:
+    timeout: 3600  # session最大超时时间(分钟)，默认为30，这里设置为6小时
+    cookie:
+      max-age: 216000    # 单位为秒，设置为6小时
+  tomcat:
+    max-threads: 128
+    uri-encoding: utf-8
+
+spring:
+  application:
+    name: hongqu-portal-api-dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/hongqu_dev?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    initial-size: 1
+    min-idle: 3
+    max-idle: 10
+    max-active: 10
+    max-wait: 60000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+
+
+  session:
+    store-type: redis
+    redis:
+      namespace: portal
+  jackson:
+    serialization:
+      indent-output: true
+  mail:
+    host: smtp.mxhichina.com
+    port: 25
+    username: postmaster@xxxx.com
+    password: xxxxx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 25000
+          starttls:
+            enable: false
+            required: false
+  redis:
+    host: localhost
+    database: 0
+    port: 6379
+    password:
+    pool:
+      max-active: 100
+      max-wait: 3000
+      max-idle: 20
+      min-idle: 10
+    timeout: 2000
+
+logging:
+  file: ./logs/${spring.application.name}.log
+
+security:
+  basic:
+    path: /swagger-ui.html
+    enabled: true
+  user:
+    name: admin
+    password: Hongqu_321
+
+management:
+  port: 8880
+  address: 127.0.0.1
+  context-path: /admin
+  security:
+    role: SUPERUSER
+
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+    path: /shutdown
+
+
+aliyun:
+  accessKeyId: xxxxx
+  accessKeySecret: xxxxx
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    bucket: hq-test
+    host: https://hq-test.oss-cn-hangzhou.aliyuncs.com
+  sms:
+     signName: xxxxx
+     templateCode: xxxxx
+  ocr:
+     appkey: xxxx
+     appSecret: xxxx
+     apiPath: /rest/160601/ocr/ocr_idcard.json
+     groupHost: dm-51.data.aliyun.com
+
+weixin:
+  pay:
+    notifyUrl:
+      goods: https://hq-api-t.xxxx.com/v1/wxpay/notify/goods
+      shop: https://hq-api-t.xxxxxx.com/v1/wxpay/notify/shop
+    mchId:  xxxx
+    mchKey: xxxx
+    body: xxxxx
+  mina:
+    appId: xxx
+    secret: xxxx
+
+kuaidi100:
+  key: xxxx
+  customer: xxxxx
+
+chuanglanSms:
+  account: xxxx
+  password: xxxxx

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.UserInfoDao">
+
+	<sql id="userInfoColumns">
+		a.id AS "id",
+		a.nickname AS "nickname",
+		a.mobile AS "mobile",
+		a.email AS "email",
+		a.address AS "address",
+		a.company AS "company",
+		a.contact AS "contact",
+		a.password AS "password",
+		a.login_error_times AS "loginErrorTimes",
+		a.sex AS "sex",
+		a.avatar AS "avatar",
+		a.status AS "status",
+		a.activation_code AS "activationCode",
+		a.third_party_user_id AS "thirdPartyUserId",
+		a.account_type AS "accountType",
+		a.shop_id AS "shopId",
+		a.country AS "country",
+		a.province AS "province",
+		a.city AS "city",
+		a.description AS "description",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="userInfoFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="nickname != null and nickname != ''">
+				AND a.nickname = #{nickname}
+			</if>
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+			<if test="email != null and email != ''">
+				AND a.email = #{email}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="userInfoJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.UserInfo">
+		SELECT
+			<include refid="userInfoColumns"/>
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		<include refid="userInfoFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.UserInfo">
+		SELECT
+			<include refid="userInfoColumns"/>
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		<include refid="userInfoFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM user_info a
+		<include refid="userInfoJoins"/>
+		<include refid="userInfoFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.UserInfo">
+		INSERT INTO user_info(
+			id,
+			nickname,
+			mobile,
+			email,
+			address,
+			company,
+			contact,
+			password,
+			login_error_times,
+			sex,
+			avatar,
+			status,
+			activation_code,
+			third_party_user_id,
+			account_type,
+			shop_id,
+			country,
+			province,
+			city,
+			description,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{nickname},
+			#{mobile},
+			#{email},
+			#{address},
+			#{company},
+			#{contact},
+			#{password},
+			#{loginErrorTimes},
+			#{sex},
+			#{avatar},
+			#{status},
+			#{activationCode},
+			#{thirdPartyUserId},
+			#{accountType},
+			#{shopId},
+			#{country},
+			#{province},
+			#{city},
+			#{description},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE user_info
+		   <set>
+		   <if test="nickname != null">
+		       nickname = #{nickname},
+	       </if>
+		   <if test="mobile != null">
+		       mobile = #{mobile},
+	       </if>
+		   <if test="email != null">
+		       email = #{email},
+	       </if>
+		   <if test="address != null">
+		       address = #{address},
+	       </if>
+		   <if test="company != null">
+		       company = #{company},
+	       </if>
+		   <if test="contact != null">
+		       contact = #{contact},
+	       </if>
+		   <if test="password != null">
+		       password = #{password},
+	       </if>
+		   <if test="loginErrorTimes != null">
+		       login_error_times = #{loginErrorTimes},
+	       </if>
+		   <if test="sex != null">
+		       sex = #{sex},
+	       </if>
+		   <if test="avatar != null">
+		       avatar = #{avatar},
+	       </if>
+		   <if test="status != null">
+		       status = #{status},
+	       </if>
+		   <if test="shopId != null">
+			   shop_id = #{shopId},
+		   </if>
+		   <if test="country != null">
+			   country = #{country},
+		   </if>
+		   <if test="province != null">
+			   province = #{province},
+		   </if>
+		   <if test="city != null">
+			   city = #{city},
+		   </if>
+		   <if test="activationCode != null">
+		       activation_code = #{activationCode},
+	       </if>
+		   <if test="thirdPartyUserId != null">
+		       third_party_user_id = #{thirdPartyUserId},
+	       </if>
+		   <if test="accountType != null">
+		       account_type = #{accountType},
+	       </if>
+		   <if test="description != null">
+		       description = #{description},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM user_info
+		WHERE id = #{id}
+	</update>
+
+</mapper>

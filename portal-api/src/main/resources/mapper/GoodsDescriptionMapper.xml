@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.GoodsDescriptionDao">
+
+	<sql id="goodsDescriptionColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="goodsDescriptionFindWhere">
+	   <where>
+			a.del_flag = 0
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="goodsDescriptionJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.GoodsDescription">
+		SELECT
+			<include refid="goodsDescriptionColumns"/>
+		FROM goods_description a
+		<include refid="goodsDescriptionJoins"/>
+		<include refid="goodsDescriptionFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.GoodsDescription">
+		SELECT
+			<include refid="goodsDescriptionColumns"/>
+		FROM goods_description a
+		<include refid="goodsDescriptionJoins"/>
+		<include refid="goodsDescriptionFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM goods_description a
+		<include refid="goodsDescriptionJoins"/>
+		<include refid="goodsDescriptionFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.GoodsDescription">
+		INSERT INTO goods_description(
+			id,
+			content,
+			create_time,
+			update_time,
+			del_flag
+		) VALUES (
+			#{id},
+			#{content},
+			NOW(),
+			#{updateTime},
+			#{delFlag}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE goods_description
+		   <set>
+		   <if test="content != null">
+		       content = #{content},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		UPDATE goods_description SET
+			del_flag = 1, update_time = NOW()
+		WHERE id = #{id}
+	</update>
+
+</mapper>

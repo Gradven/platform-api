@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.SensitiveWordDao">
+
+	<sql id="sensitiveWordColumns">
+		a.id AS "id",
+		a.word AS "word"
+	</sql>
+
+	<sql id="sensitiveWordFindWhere">
+	   <where>
+			a.del_flag = 0
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="word != null and word != ''">
+				AND a.word = #{word}
+			</if>
+		        AND a.del_flag = 0
+		</where>
+	</sql>
+
+	<sql id="sensitiveWordJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.SensitiveWord">
+		SELECT
+			<include refid="sensitiveWordColumns"/>
+		FROM sensitive_word a
+		<include refid="sensitiveWordJoins"/>
+		<include refid="sensitiveWordFindWhere"/>
+		ORDER BY .create_time DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.SensitiveWord">
+		SELECT
+			<include refid="sensitiveWordColumns"/>
+		FROM sensitive_word a
+		<include refid="sensitiveWordJoins"/>
+		<include refid="sensitiveWordFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM sensitive_word a
+		<include refid="sensitiveWordJoins"/>
+		<include refid="sensitiveWordFindWhere"/>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO sensitive_word(
+			id,
+			word
+		) VALUES (
+			#{id},
+			#{word}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE sensitive_word
+		   <set>
+		   <if test="word != null">
+			   word = #{word},
+	       </if>
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		UPDATE sensitive_word SET
+			del_flag = 1, update_time = NOW()
+		WHERE id = #{id}
+	</update>
+
+</mapper>

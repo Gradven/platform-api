@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.GoodsSpecificationDao">
+
+	<sql id="goodsSpecificationColumns">
+		a.id AS "id",
+		a.goods_id AS "goodsId",
+		a.specification_id AS "specificationId",
+		a.value AS "value",
+		a.pic_url AS "picUrl",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="goodsSpecificationFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="goodsId != null and goodsId != ''">
+				AND a.goods_id = #{goodsId}
+			</if>
+			<if test="specificationId != null and specificationId != ''">
+				AND a.specification_id = #{specificationId}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="goodsSpecificationJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.GoodsSpecification">
+		SELECT
+			<include refid="goodsSpecificationColumns"/>
+		FROM goods_specification a
+		<include refid="goodsSpecificationJoins"/>
+		<include refid="goodsSpecificationFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.GoodsSpecification">
+		SELECT
+			<include refid="goodsSpecificationColumns"/>
+		FROM goods_specification a
+		<include refid="goodsSpecificationJoins"/>
+		<include refid="goodsSpecificationFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM goods_specification a
+		<include refid="goodsSpecificationJoins"/>
+		<include refid="goodsSpecificationFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.GoodsSpecification">
+		INSERT INTO goods_specification(
+			id,
+			goods_id,
+			specification_id,
+			value,
+			pic_url,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{goodsId},
+			#{specificationId},
+			#{value},
+			#{picUrl},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE goods_specification
+		   <set>
+		   <if test="goodsId != null">
+		       goods_id = #{goodsId},
+	       </if>
+		   <if test="specificationId != null">
+		       specification_id = #{specificationId},
+	       </if>
+		   <if test="value != null">
+		       value = #{value},
+	       </if>
+		   <if test="picUrl != null">
+		       pic_url = #{picUrl},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM goods_specification
+		WHERE id = #{id}
+	</update>
+
+</mapper>

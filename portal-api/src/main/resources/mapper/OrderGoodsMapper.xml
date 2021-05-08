@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.OrderGoodsDao">
+
+	<sql id="orderGoodsColumns">
+		a.id AS "id",
+		a.order_sn AS "orderSn",
+		a.goods_id AS "goodsId",
+		a.goods_name AS "goodsName",
+		a.goods_sn AS "goodsSn",
+		a.product_id AS "productId",
+		a.goods_number AS "goodsNumber",
+		a.goods_specification_name_value AS "goodsSpecificationNameValue",
+		a.goods_specification_ids AS "goodsSpecificationIds",
+		a.retail_price AS "retailPrice",
+		a.unit_price AS "unitPrice",
+		a.profit AS "profit",
+		a.amount_profit AS "amountProfit",
+		a.amount_retail AS "amountRetail",
+		a.user_id AS "userId",
+		a.supplier_id AS "supplierId",
+		a.shop_id AS "shopId",
+		a.pic_url AS "picUrl",
+		a.shipping_code AS "shippingCode",
+		a.shipping_name AS "shippingName",
+		a.shipping_fee AS "shippingFee",
+		a.shipping_no AS "shippingNo",
+		a.shipping_status AS "shippingStatus",
+		a.pay_status AS "payStatus",
+		a.confirm_time AS "confirmTime",
+		a.delivery_time AS "deliveryTime",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="orderGoodsFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="orderSn != null and orderSn != ''">
+				AND a.order_sn = #{orderSn}
+			</if>
+			<if test="goodsId != null and goodsId != ''">
+				AND a.goods_id = #{goodsId}
+			</if>
+			<if test="goodsSn != null and goodsSn != ''">
+				AND a.goods_sn = #{goodsSn}
+			</if>
+			<if test="productId != null and productId != ''">
+				AND a.product_id = #{productId}
+			</if>
+		    <if test="userId != null and userId != ''">
+			   AND a.user_id = #{userId}
+		    </if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="shippingCode != null and shippingCode != ''">
+				AND a.shipping_code = #{shippingCode}
+			</if>
+			<if test="shippingNo != null and shippingNo != ''">
+				AND a.shipping_no = #{shippingNo}
+			</if>
+		   <if test="shippingStatus != null">
+			   AND a.shipping_status = #{shippingStatus}
+		   </if>
+		   <if test="payStatus != null">
+			   AND a.pay_status = #{payStatus}
+		   </if>
+		   <if test="beginDeliveryTime != null and endDeliveryTime != null ">
+			   AND a.delivery_time BETWEEN #{beginDeliveryTime} AND #{endDeliveryTime}
+		   </if>
+			<if test="beginCreateTime != null and endCreateTime != null ">
+				AND a.create_time BETWEEN #{beginCreateTime} AND #{endCreateTime}
+			</if>
+		   <if test="shippingStatusArray != null ">
+		        AND a.shipping_status  IN
+		       <foreach item="item" index="index" collection="shippingStatusArray" open="("
+					separator="," close=")">
+			   #{item}
+		       </foreach>
+		   </if>
+
+	   </where>
+	</sql>
+
+	<sql id="orderGoodsJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.OrderGoods">
+		SELECT
+			<include refid="orderGoodsColumns"/>
+		FROM order_goods a
+		<include refid="orderGoodsJoins"/>
+		<include refid="orderGoodsFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.OrderGoods">
+		SELECT
+			<include refid="orderGoodsColumns"/>
+		FROM order_goods a
+		<include refid="orderGoodsJoins"/>
+		<include refid="orderGoodsFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM order_goods a
+		<include refid="orderGoodsJoins"/>
+		<include refid="orderGoodsFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.OrderGoods">
+		INSERT INTO order_goods(
+			id,
+			order_sn,
+			goods_id,
+			goods_name,
+			goods_sn,
+			product_id,
+			goods_number,
+			goods_specification_name_value,
+			goods_specification_ids,
+			retail_price,
+			unit_price,
+			profit,
+			amount_profit,
+			amount_retail,
+			user_id,
+			supplier_id,
+			shop_id,
+			pic_url,
+			shipping_code,
+			shipping_name,
+			shipping_fee,
+			shipping_no,
+			shipping_status,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{orderSn},
+			#{goodsId},
+			#{goodsName},
+			#{goodsSn},
+			#{productId},
+			#{goodsNumber},
+			#{goodsSpecificationNameValue},
+			#{goodsSpecificationIds},
+			#{retailPrice},
+			#{unitPrice},
+			#{profit},
+			#{amountProfit},
+			#{amountRetail},
+			#{userId},
+			#{supplierId},
+			#{shopId},
+			#{picUrl},
+			#{shippingCode},
+			#{shippingName},
+			#{shippingFee},
+			#{shippingNo},
+			#{shippingStatus},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE order_goods
+		   <set>
+		   <if test="orderSn != null">
+		       order_sn = #{orderSn},
+	       </if>
+		   <if test="goodsId != null">
+		       goods_id = #{goodsId},
+	       </if>
+		   <if test="goodsName != null">
+		       goods_name = #{goodsName},
+	       </if>
+		   <if test="goodsSn != null">
+		       goods_sn = #{goodsSn},
+	       </if>
+		   <if test="productId != null">
+		       product_id = #{productId},
+	       </if>
+		   <if test="goodsNumber != null">
+		       goods_number = #{goodsNumber},
+	       </if>
+		   <if test="goodsSpecificationNameValue != null">
+		       goods_specification_name_value = #{goodsSpecificationNameValue},
+	       </if>
+		   <if test="goodsSpecificationIds != null">
+		       goods_specification_ids = #{goodsSpecificationIds},
+	       </if>
+		   <if test="retailPrice != null">
+		       retail_price = #{retailPrice},
+	       </if>
+		   <if test="unitPrice != null">
+		       unit_price = #{unitPrice},
+	       </if>
+		   <if test="profit != null">
+		       profit = #{profit},
+	       </if>
+		   <if test="amountProfit != null">
+			   amount_profit = #{amountProfit},
+		   </if>
+		   <if test="amountRetail != null">
+			   amount_retail = #{amountRetail},
+		   </if>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="supplierId != null">
+		       supplier_id = #{supplierId},
+	       </if>
+		   <if test="payStatus != null">
+			   pay_status = #{payStatus},
+		   </if>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="picUrl != null">
+		       pic_url = #{picUrl},
+	       </if>
+		   <if test="shippingCode != null">
+		       shipping_code = #{shippingCode},
+	       </if>
+		   <if test="shippingName != null">
+		       shipping_name = #{shippingName},
+	       </if>
+		   <if test="shippingFee != null">
+		       shipping_fee = #{shippingFee},
+	       </if>
+		   <if test="shippingNo != null">
+		       shipping_no = #{shippingNo},
+	       </if>
+		   <if test="shippingStatus != null">
+			   shipping_status = #{shippingStatus},
+		   </if>
+		   <if test="confirmTime != null">
+			   confirm_time = #{confirmTime},
+		   </if>
+		   <if test="deliveryTime != null">
+			   delivery_time = #{deliveryTime},
+		   </if>
+		       update_time = NOW(),
+
+           </set>
+		<where>
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="orderSn != null and orderSn != ''">
+				AND order_sn = #{orderSn}
+			</if>
+		</where>
+	</update>
+
+	<update id="autoConfirm">
+		UPDATE order_goods SET confirm_time = NOW()
+		WHERE delivery_time BETWEEN #{beginDeliveryTime} AND #{endDeliveryTime}
+		AND pay_status = 1
+		AND confirm_time is null
+	</update>
+
+	<update id="delete">
+		DELETE FROM order_goods
+		WHERE id = #{id}
+	</update>
+
+</mapper>

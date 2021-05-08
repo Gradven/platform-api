@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.WeixinNotifyDataDao">
+
+	<sql id="weixinNotifyDataColumns">
+		a.id AS "id",
+		a.order_sn AS "orderSn",
+		a.content AS "content"
+	</sql>
+
+	<sql id="weixinNotifyDataFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="orderSn != null and orderSn != ''">
+				AND a.order_sn = #{orderSn}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="weixinNotifyDataJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.WeixinNotifyData">
+		SELECT
+			<include refid="weixinNotifyDataColumns"/>
+		FROM weixin_notify_data a
+		<include refid="weixinNotifyDataJoins"/>
+		<include refid="weixinNotifyDataFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.WeixinNotifyData">
+		SELECT
+			<include refid="weixinNotifyDataColumns"/>
+		FROM weixin_notify_data a
+		<include refid="weixinNotifyDataJoins"/>
+		<include refid="weixinNotifyDataFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM weixin_notify_data a
+		<include refid="weixinNotifyDataJoins"/>
+		<include refid="weixinNotifyDataFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.WeixinNotifyData">
+		INSERT INTO weixin_notify_data(
+			id,
+			order_sn,
+			content,
+			create_time
+		) VALUES (
+			#{id},
+			#{orderSn},
+			#{content},
+			NOW()
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE weixin_notify_data
+		   <set>
+		   <if test="orderSn != null">
+		       order_sn = #{orderSn},
+	       </if>
+		   <if test="content != null">
+		       content = #{content},
+	       </if>
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM weixin_notify_data
+		WHERE id = #{id}
+	</update>
+
+</mapper>

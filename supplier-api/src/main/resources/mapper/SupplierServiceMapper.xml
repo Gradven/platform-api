@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.SupplierServiceDao">
+
+	<sql id="supplierServiceColumns">
+		a.id AS "id",
+		a.order_goods_id AS "orderGoodsId",
+		a.supplier_id AS "supplierId",
+		a.user_id AS "userId",
+		a.shop_id AS "shopId",
+		a.status AS "status",
+		a.reason_type AS "reasonType",
+		a.reason AS "reason",
+		a.cancel_time AS "cancelTime",
+		a.service_address AS "serviceAddress",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="supplierServiceFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="orderGoodsId != null and orderGoodsId != ''">
+				AND a.order_goods_id = #{orderGoodsId}
+			</if>
+			<if test="supplierId != null and supplierId != ''">
+				AND a.supplier_id = #{supplierId}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="supplierServiceJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.SupplierService">
+		SELECT
+			<include refid="supplierServiceColumns"/>
+		FROM supplier_service a
+		<include refid="supplierServiceJoins"/>
+		<include refid="supplierServiceFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.SupplierService">
+		SELECT
+			<include refid="supplierServiceColumns"/>
+		FROM supplier_service a
+		<include refid="supplierServiceJoins"/>
+		<include refid="supplierServiceFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM supplier_service a
+		<include refid="supplierServiceJoins"/>
+		<include refid="supplierServiceFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.SupplierService">
+		INSERT INTO supplier_service(
+			id,
+			order_goods_id,
+			supplier_id,
+			user_id,
+			shop_id,
+			status,
+			reason_type,
+			reason,
+			cancel_time,
+			reply,
+			service_address,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{orderGoodsId},
+			#{supplierId},
+			#{userId},
+			#{shopId},
+			#{status},
+			#{reasonType},
+			#{reason},
+			#{cancelTime},
+			#{reply},
+			#{serviceAddress},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE supplier_service
+		   <set>
+		   <if test="orderGoodsId != null">
+		       order_goods_id = #{orderGoodsId},
+	       </if>
+		   <if test="supplierId != null">
+		       supplier_id = #{supplierId},
+	       </if>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="status != null">
+		       status = #{status},
+	       </if>
+		   <if test="reasonType != null">
+		       reason_type = #{reasonType},
+	       </if>
+		   <if test="reason != null">
+		       reason = #{reason},
+	       </if>
+		   <if test="cancelTime != null">
+		       cancel_time = #{cancelTime},
+	       </if>
+		   <if test="reply != null">
+		       reply = #{reply},
+	       </if>
+		   <if test="serviceAddress != null">
+		       service_address = #{serviceAddress},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM supplier_service
+		WHERE id = #{id}
+	</update>
+
+</mapper>

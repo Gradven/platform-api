@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.OrderShopServeDao">
+
+	<sql id="orderShopServeColumns">
+		a.id AS "id",
+		a.sn AS "sn",
+		a.shop_id AS "shopId",
+		a.user_id AS "userId",
+		a.fee AS "fee",
+		a.status AS "status",
+		a.pay_type AS "payType",
+		a.pay_status AS "payStatus",
+		a.cancel_type AS "cancelType",
+		a.cancel_time AS "cancelTime",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="orderShopServeFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="sn != null and sn != ''">
+				AND a.sn = #{sn}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+		   <if test="payStatus != null and payStatus != ''">
+			   AND a.pay_status = #{payStatus}
+		   </if>
+		    <if test="beginCreateTime != null and endCreateTime != null ">
+			    AND a.create_time BETWEEN #{beginCreateTime} AND #{endCreateTime}
+		    </if>
+		</where>
+	</sql>
+
+	<sql id="orderShopServeJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.OrderShopServe">
+		SELECT
+			<include refid="orderShopServeColumns"/>
+		FROM order_shop_serve a
+		<include refid="orderShopServeJoins"/>
+		<include refid="orderShopServeFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.OrderShopServe">
+		SELECT
+			<include refid="orderShopServeColumns"/>
+		FROM order_shop_serve a
+		<include refid="orderShopServeJoins"/>
+		<include refid="orderShopServeFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM order_shop_serve a
+		<include refid="orderShopServeJoins"/>
+		<include refid="orderShopServeFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.OrderShopServe">
+		INSERT INTO order_shop_serve(
+			id,
+			sn,
+			shop_id,
+			user_id,
+			fee,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{sn},
+			#{shopId},
+			#{userId},
+			#{fee},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE order_shop_serve
+		   <set>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="fee != null">
+		       fee = #{fee},
+	       </if>
+		   <if test="status != null">
+			   status = #{status},
+		   </if>
+		   <if test="payType != null">
+			   pay_type = #{payType},
+		   </if>
+		   <if test="payStatus != null">
+		       pay_status = #{payStatus},
+	       </if>
+		   <if test="payMoney != null">
+			   pay_money = #{payMoney},
+		   </if>
+		   <if test="payTime != null">
+			   pay_time = #{payTime},
+		   </if>
+		   <if test="cancelType != null">
+			   cancel_type = #{cancelType},
+		   </if>
+		   <if test="cancelTime != null">
+			   cancel_time = #{cancelTime},
+		   </if>
+		       update_time = NOW(),
+
+           </set>
+		<where>
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			    AND sn = #{sn}
+		</where>
+	</update>
+
+	<update id="delete">
+		DELETE FROM order_shop_serve
+		WHERE id = #{id}
+	</update>
+
+</mapper>

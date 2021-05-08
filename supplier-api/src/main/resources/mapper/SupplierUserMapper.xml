@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.supplier.api.dao.SupplierUserDao">
+
+	<sql id="supplierUserColumns">
+        a.id AS "id",
+		a.name AS "name",
+		a.password AS "password",
+		a.age AS "age",
+		a.account AS "account",
+		a.mobile AS "mobile",
+		a.email AS "email",
+		a.status AS "status",
+		a.supplier_id AS "supplierId",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="supplierUserFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					CONCAT('%',#{name},'%')
+			</if>
+			<if test="account != null and account != ''">
+				AND a.account = #{account}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="supplierUserJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.supplier.api.entity.SupplierUser">
+		SELECT
+			<include refid="supplierUserColumns"/>
+		FROM supplier_user a
+		<include refid="supplierUserJoins"/>
+		<include refid="supplierUserFindWhere"/>
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.supplier.api.entity.SupplierUser">
+		SELECT
+			<include refid="supplierUserColumns"/>
+		FROM supplier_user a
+		<include refid="supplierUserJoins"/>
+		<include refid="supplierUserFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM supplier_user a
+		<include refid="supplierUserJoins"/>
+		<include refid="supplierUserFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.supplier.api.entity.SupplierUser">
+		INSERT INTO supplier_user(
+			id,
+			name,
+			password,
+			age,
+			account,
+			mobile,
+			email,
+			status,
+			supplier_id,
+			create_time
+		) VALUES (
+			#{id},
+			#{name},
+			#{password},
+			#{age},
+			#{account},
+			#{mobile},
+			#{email},
+			#{status},
+			#{supplierId},
+			NOW()
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE supplier_user
+		   <set>
+		   <if test="name != null">
+		   name = #{name},
+	       </if>
+		   <if test="password != null">
+		   password = #{password},
+	       </if>
+		   <if test="age != null">
+		   age = #{age},
+	       </if>
+		   <if test="account != null">
+		   account = #{account},
+	       </if>
+		   <if test="mobile != null">
+		   mobile = #{mobile},
+	       </if>
+		   <if test="email != null">
+		   email = #{email},
+	       </if>
+		   <if test="status != null">
+		   status = #{status},
+	       </if>
+		   <if test="supplierId != null">
+		   supplier_id = #{supplierId},
+	       </if>
+		   update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM supplier_user
+		WHERE id = #{id}
+	</update>
+
+</mapper>

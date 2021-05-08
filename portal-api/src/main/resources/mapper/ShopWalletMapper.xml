@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.channelsharing.hongqu.portal.api.dao.ShopWalletDao">
+
+	<sql id="shopWalletColumns">
+		a.id AS "id",
+		a.shop_id AS "shopId",
+		a.balance AS "balance",
+		a.withdraw AS "withdraw",
+		a.profit_amount AS "profitAmount",
+		a.user_id AS "userId",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime"
+	</sql>
+
+	<sql id="shopWalletFindWhere">
+	   <where>
+
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="shopId != null and shopId != ''">
+				AND a.shop_id = #{shopId}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="shopWalletJoins">
+
+	</sql>
+
+	<select id="findOne" resultType="com.channelsharing.hongqu.portal.api.entity.ShopWallet">
+		SELECT
+			<include refid="shopWalletColumns"/>
+		FROM shop_wallet a
+		<include refid="shopWalletJoins"/>
+		<include refid="shopWalletFindWhere"/>
+		ORDER BY a.id DESC
+		LIMIT 0, 1
+	</select>
+
+	<select id="findList" resultType="com.channelsharing.hongqu.portal.api.entity.ShopWallet">
+		SELECT
+			<include refid="shopWalletColumns"/>
+		FROM shop_wallet a
+		<include refid="shopWalletJoins"/>
+		<include refid="shopWalletFindWhere"/>
+		ORDER BY a.create_time DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="findAllCount" resultType="Integer">
+		SELECT
+			COUNT(a.id)
+		FROM shop_wallet a
+		<include refid="shopWalletJoins"/>
+		<include refid="shopWalletFindWhere"/>
+	</select>
+
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.channelsharing.hongqu.portal.api.entity.ShopWallet">
+		INSERT INTO shop_wallet(
+			id,
+			shop_id,
+			balance,
+			withdraw,
+			profit_amount,
+			user_id,
+			create_time,
+			update_time
+		) VALUES (
+			#{id},
+			#{shopId},
+			#{balance},
+			#{withdraw},
+			#{profitAmount},
+			#{userId},
+			NOW(),
+			#{updateTime}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE shop_wallet
+		   <set>
+		   <if test="shopId != null">
+		       shop_id = #{shopId},
+	       </if>
+		   <if test="balance != null">
+		       balance = #{balance},
+	       </if>
+		   <if test="withdraw != null">
+		       withdraw = #{withdraw},
+	       </if>
+		   <if test="profitAmount != null">
+		       profit_amount = #{profitAmount},
+	       </if>
+		   <if test="userId != null">
+		       user_id = #{userId},
+	       </if>
+		       update_time = NOW(),
+
+           </set>
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM shop_wallet
+		WHERE id = #{id}
+	</update>
+
+</mapper>
